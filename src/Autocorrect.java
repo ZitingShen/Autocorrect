@@ -38,7 +38,7 @@ public class Autocorrect {
 						>= 0) {
 						writer.write(text[i] + " ");
 					} else {
-						if (i != 0) {
+						if (i > 0) {
 							String correctWord = map.get(text[i-1].toLowerCase());
 							if (correctWord == null) correctWord = text[i];
 							writer.write(correctWord + " ");
