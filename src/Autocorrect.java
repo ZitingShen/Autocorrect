@@ -15,21 +15,19 @@ import java.util.Arrays;
 public class Autocorrect {
 	public static void main(String[] args) {
 		try {
-			Scanner words = new Scanner(new FileInputStream("../data/1gram.txt"));
-			ArrayList<String> wordList = new ArrayList<String>();
+			Scanner words = new Scanner(new FileInputStream("../data/Words.txt"));
+			HashMap<String, Integer> wordList = new HashMap<String, Integer>();
 			while (words.hasNextLine()) {
-				wordList.add(words.nextLine());
-			}
-			String[] allWords = new String[wordList.size()];
-			wordList.toArray(allWords);
-
-			words = new Scanner(new FileInputStream("../data/2gramOutput.txt"));
-			HashMap<String, String> map = new HashMap<String, String>();
-			while (words.hasNextLine()) {
-				String[] twoWords = words.nextLine().split(" ");
-				map.put(twoWords[0], twoWords[1]);
+				String[] pieces = words.nextLine().split(" ");
+				wordList.put(pieces[0].toLowerCase(), Integer.parseInt(pieces[1]));
 			}
 
+			// words = new Scanner(new FileInputStream("../data/2gramOutput.txt"));
+			// HashMap<String, String> map = new HashMap<String, String>();
+			// while (words.hasNextLine()) {
+			// 	String[] twoWords = words.nextLine().split(" ");
+			// 	map.put(twoWords[0], twoWords[1]);
+			// }
 
 			Scanner scanner = new Scanner(new FileInputStream("../data/dictionary.txt"));
 			ArrayList<String> dic = new ArrayList<String>();
@@ -67,12 +65,11 @@ public class Autocorrect {
 			while (words.hasNextLine()) {
 				String[] text = words.nextLine().split(" +");
 				for (int i = 0; i < text.length; i++) {
-					if (Arrays.binarySearch(allWords, text[i].toLowerCase()) 
-						>= 0) {
+					if (wordList.containsKey(text[i].toLowerCase())) {
 						writer.write(text[i] + " ");
 					} else {
 						HashSet<String> hs = deleteChars(text[i]);
-						Hashset<String> hs2 = new HashSet<String>();
+						HashSet<String> hs2 = new HashSet<String>();
 						for (String s : hs) {
 							hs2.addAll(deleteChars(s));
 						}
@@ -84,6 +81,19 @@ public class Autocorrect {
 								options.addAll(res);
 							}
 						}
+
+						int maxFreq = 0;
+						String finalChoice = null;
+						for (String s: options) {
+							int newFreq = wordList.get(s);
+							if (newFreq > maxFreq) {
+								maxFreq = newFreq;
+								finalChoice = s;
+							}
+						}
+						if (finalChoice == null) finalChoice = text[i];
+
+						writer.write(finalChoice + " ");
 					}
 				}
 				writer.write("\n");
@@ -93,9 +103,9 @@ public class Autocorrect {
  		catch (FileNotFoundException e) {
  			System.out.println("File not found");
  		} 
- 	// 	catch (IOException e) {
-		// 	e.printStackTrace();
-		// }
+ 	 	catch (IOException e) {
+		 	e.printStackTrace();
+		}
 	}
 
 	private static HashSet<String> deleteChars(String s) {
