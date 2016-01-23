@@ -22,12 +22,18 @@ public class Autocorrect {
 				wordList.put(pieces[0].toLowerCase(), Integer.parseInt(pieces[1]));
 			}
 
-			// words = new Scanner(new FileInputStream("../data/2gramOutput.txt"));
-			// HashMap<String, String> map = new HashMap<String, String>();
-			// while (words.hasNextLine()) {
-			// 	String[] twoWords = words.nextLine().split(" ");
-			// 	map.put(twoWords[0], twoWords[1]);
-			// }
+			Scanner n_grams = new Scanner(new FileInputStream("../data/2gram.txt"));
+			HashMap<String, ArrayList<WordFreq>> map 
+				= new HashMap<String, ArrayList<WordFreq>>();
+			while (n_grams.hasNextLine()) {
+				String[] params = n_grams.nextLine().split("\t+");
+				int freq = Integer.parseInt(params[0]);
+				String first = params[1], second = params[2];
+				ArrayList<WordFreq> wordFreqs = map.get(first);
+				if (wordFreqs == null) wordFreqs = new ArrayList<WordFreq>();
+				wordFreqs.add(new WordFreq(second, freq));
+				map.put(first, wordFreqs);
+			}
 
 			Scanner scanner = new Scanner(new FileInputStream("../data/dictionary.txt"));
 			ArrayList<String> dic = new ArrayList<String>();
@@ -64,6 +70,10 @@ public class Autocorrect {
 			FileWriter writer = new FileWriter(new File("../data/output.txt"));
 			while (words.hasNextLine()) {
 				String[] text = words.nextLine().split(" +");
+				if (text[0].length() == 0) {
+					writer.write("\n");
+					continue;
+				}
 				for (int i = 0; i < text.length; i++) {
 					if (wordList.containsKey(text[i].toLowerCase())) {
 						writer.write(text[i] + " ");
@@ -74,6 +84,7 @@ public class Autocorrect {
 							hs2.addAll(deleteChars(s));
 						}
 						hs.addAll(hs2);
+						hs.add(text[i]);
 						HashSet<String> options = new HashSet<String>();
 						for (String s : hs) {
 							ArrayList<String> res = newDic.get(s);
@@ -84,13 +95,28 @@ public class Autocorrect {
 
 						int maxFreq = 0;
 						String finalChoice = null;
-						for (String s: options) {
-							int newFreq = wordList.get(s);
-							if (newFreq > maxFreq) {
-								maxFreq = newFreq;
-								finalChoice = s;
+						if (i > 0) {
+							ArrayList<WordFreq> wordFreqs = map.get(text[i-1]);
+							if (wordFreqs != null) {
+								for (WordFreq w: wordFreqs) {
+									if (options.contains(w.word) && (w.freq > maxFreq)) {
+										maxFreq = w.freq;
+										finalChoice = w.word;
+									}
+								}
 							}
 						}
+
+						if (finalChoice == null) {
+							for (String s: options) {
+								Integer newFreq = wordList.get(s);
+								if ((newFreq != null) && (newFreq > maxFreq)) {
+									maxFreq = newFreq;
+									finalChoice = s;
+								}
+							}
+						}
+
 						if (finalChoice == null) finalChoice = text[i];
 
 						writer.write(finalChoice + " ");
