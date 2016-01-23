@@ -16,7 +16,7 @@ public class Autocorrect {
 			while (words.hasNextLine()) {
 				wordList.add(words.nextLine());
 			}
-			words = new Scanner(new FileInputStream("../data//2gramOutput.txt"));
+			words = new Scanner(new FileInputStream("../data/2gramOutput.txt"));
 			HashMap<String, String> map = new HashMap<String, String>();
 			while (words.hasNextLine()) {
 				String[] twoWords = words.nextLine().split(" ");
