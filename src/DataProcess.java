@@ -1,5 +1,4 @@
 import java.util.Arrays;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -43,10 +42,10 @@ public class DataProcess {
 			}
 
 			FileWriter writer = new FileWriter(new File("../data/2gramOutput.txt"));
-				for (String key : map.keySet()) {
-					writer.write(key + " " + map.get(key).word + "\n");
-				}
-				writer.close();
+			for (String key : map.keySet()) {
+				writer.write(key + " " + map.get(key).word + "\n");
+			}
+			writer.close();
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
