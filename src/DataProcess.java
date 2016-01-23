@@ -6,25 +6,14 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.HashMap;
 
-
-class WordFreq {
-	String word;
-	int freq;
-
-	public WordFreq(String word, int freq) {
-		this.word = word;
-		this.freq = freq;
-	}
-}
-
 public class DataProcess {
 	public static void main(String[] args) {
 		try {
-			Scanner two_grams = new Scanner(new FileInputStream("../data/2gram.txt"));
+			Scanner n_grams = new Scanner(new FileInputStream("../data/2gram.txt"));
 			HashMap<String, WordFreq> map = new HashMap<String, WordFreq>();
 			
-			while (two_grams.hasNextLine()) {
-				String[] params = two_grams.nextLine().split("\t+");
+			while (n_grams.hasNextLine()) {
+				String[] params = n_grams.nextLine().split("\t+");
 				//System.out.println(Arrays.toString(params));
 				int freq = Integer.parseInt(params[0]);
 				String first = params[1], second = params[2];
