@@ -42,7 +42,7 @@ public class DataProcess {
 				
 			}
 
-			FileWriter writer = new FileWriter(new File("2gramOutput.txt"));
+			FileWriter writer = new FileWriter(new File("../data/2gramOutput.txt"));
 				for (String key : map.keySet()) {
 					writer.write(key + " " + map.get(key).word + "\n");
 				}
