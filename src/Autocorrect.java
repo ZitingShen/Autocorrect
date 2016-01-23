@@ -1,3 +1,6 @@
+/* Author: Ziting Shen & Rachel Xu
+ * Date: 01/23/2016
+ */
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
